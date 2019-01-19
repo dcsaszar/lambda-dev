@@ -1,11 +1,11 @@
-const chalk = require("chalk");
-const fs = require("fs");
-const globSync = require("glob/sync");
-const path = require("path");
+import chalk from "chalk";
+import * as fs from "fs";
+import { sync } from "fast-glob";
+import * as path from "path";
 
 const CWD = process.cwd();
 
-const getGlobAndCwd = entry => {
+export const getGlobAndCwd = (entry: string) => {
   const resolved = path.resolve(entry);
   const dirStat = fs.statSync(resolved);
 
@@ -17,29 +17,27 @@ const getGlobAndCwd = entry => {
   }
 };
 
-module.exports = (entry = CWD, include, exclude) => {
+export type Entry = {
+  file: string;
+  target: string;
+  requestPath: string;
+};
+
+export default function getEntries(
+  entry: string = CWD,
+  include?: string[],
+  exclude?: string[]
+): Entry[] | undefined {
   try {
     const { glob, cwd } = getGlobAndCwd(entry);
-    let files;
-
-    if (include) {
-      files = globSync(include, {
-        absolute: true,
-        cwd,
-        ignore: exclude,
-        matchBase: true,
-        nodir: true,
-        root: entry
-      });
-    } else {
-      files = globSync(glob, {
-        absolute: true,
-        cwd,
-        ignore: exclude,
-        matchBase: true,
-        nodir: true
-      });
-    }
+    const files = sync<string>(include || glob, {
+      absolute: true,
+      cwd: entry,
+      ignore: exclude,
+      matchBase: true,
+      onlyFiles: true,
+      stats: false // return file path string
+    });
 
     return files.map(file => {
       const parsed = path.parse(file);
@@ -54,4 +52,4 @@ module.exports = (entry = CWD, include, exclude) => {
   } catch (err) {
     console.error(`${chalk.grey("λ-dev")} ${chalk.red("Glob error:")}`, err);
   }
-};
+}

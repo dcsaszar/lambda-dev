@@ -1,15 +1,16 @@
-const bodyParser = require("body-parser");
-const chalk = require("chalk");
-const express = require("express");
-const path = require("path");
-const requireFromString = require("require-from-string");
-const webpack = require("webpack");
+import * as bodyParser from "body-parser";
+import * as express_ from "express";
+import requireFromString from "require-from-string";
+import chalk from "chalk";
 
-const build = require("./build");
+import build from "./build";
+
+// typescript namespace import doesn't work with Rollup
+const express = express_;
 
 const prefix = chalk.grey("λ-dev");
 
-const handleErr = (err, res) => {
+const handleErr = (err: Error, res: express_.Response) => {
   res.status(500).send("Function invocation failed: " + err.toString());
   return console.error(
     `${prefix} ${chalk.red("Function invocation failed:")}`,
@@ -17,7 +18,10 @@ const handleErr = (err, res) => {
   );
 };
 
-const createCallback = res => (err, lambdaRes) => {
+const createCallback = (res: express_.Response) => (
+  err: Error | null,
+  lambdaRes: any | null
+) => {
   if (err) return handleErr(err, res);
 
   res.status(lambdaRes.statusCode);
@@ -29,16 +33,39 @@ const createCallback = res => (err, lambdaRes) => {
   res.send(lambdaRes.body);
 };
 
-const promiseCallback = (promise, callback) => {
-  if (!promise) return;
-  if (typeof promise.then !== "function") return;
-  if (typeof callback !== "function") return;
-
-  promise.then(res => callback(null, res)).catch(err => callback(err, null));
+const promiseCallback = (
+  promise: Promise<void>,
+  callback: ReturnType<typeof createCallback>
+) => {
+  if (promise) {
+    promise.then(res => callback(null, res)).catch(err => callback(err, null));
+  }
 };
 
-const createHandler = (source, filename) => (req, res) => {
-  let lambda;
+type Event = {
+  path: express_.Request["path"];
+  httpMethod: express_.Request["method"];
+  queryStringParameters: express_.Request["query"];
+  headers: express_.Request["headers"];
+  body: express_.Request["body"];
+};
+
+type CallbackFn = (
+  error: Error | null,
+  response: express_.Response | null
+) => void;
+
+type Handler = (
+  event: Event,
+  context: {},
+  callback: CallbackFn
+) => Promise<void>;
+
+const createHandler = (
+  source: string,
+  filename: string
+): express_.RequestHandler => (req, res) => {
+  let lambda: { handler: Handler };
 
   try {
     lambda = requireFromString(source, filename);
@@ -59,15 +86,20 @@ const createHandler = (source, filename) => (req, res) => {
   promiseCallback(promise, callback);
 };
 
-const getPath = basePath => {
+const getPath = (basePath: string) => {
   const path = basePath.startsWith("/") ? basePath : "/" + basePath;
   return path.endsWith("/") ? path.replace(/\/$/, "") : path;
 };
 
 // handlers for all routes
-const routeHandlers = {};
+const routeHandlers: { [key: string]: express_.RequestHandler } = {};
 
-const createServer = async ({
+type CreateServer = CliServeArgs & {
+  dev?: boolean;
+  watch?: boolean;
+};
+
+export const createServer = async ({
   basePath,
   dev = true,
   entry,
@@ -77,7 +109,7 @@ const createServer = async ({
   port,
   watch = true,
   webpackConfig: customConfig
-}) => {
+}: CreateServer) => {
   let firstRun = true;
   const app = express();
   app.use(bodyParser.raw());
@@ -98,8 +130,8 @@ const createServer = async ({
 
         if (firstRun) {
           // create route that calls handler by requestPath
-          app.all(requestPath, (req, res) =>
-            routeHandlers[requestPath](req, res)
+          app.all(requestPath, (req, res, next) =>
+            routeHandlers[requestPath](req, res, next)
           );
 
           console.log(
@@ -123,9 +155,11 @@ const createServer = async ({
   return app;
 };
 
-exports.createServer = createServer;
+type Serve = CliServeArgs & {
+  watch?: boolean;
+};
 
-exports.listen = async ({
+export default async ({
   basePath,
   entry,
   exclude,
@@ -134,7 +168,7 @@ exports.listen = async ({
   port,
   watch,
   webpackConfig: customConfig
-}) => {
+}: Serve) => {
   const app = await createServer({
     basePath,
     entry,
@@ -146,7 +180,7 @@ exports.listen = async ({
     webpackConfig: customConfig
   });
 
-  return app.listen(port, err => {
+  return app.listen(port, (err: Error) => {
     if (err) {
       console.error(`${prefix} ${chalk.red("Serve error:")}`, err);
       throw err;

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["es6"],
+    "noResolve": false,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "strict": true,
+    "target": "es5"
+  }
+}
