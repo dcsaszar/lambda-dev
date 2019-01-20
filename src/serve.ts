@@ -1,90 +1,24 @@
 import * as bodyParser from "body-parser";
-import * as express_ from "express";
-import * as requireFromString_ from "require-from-string";
+import * as express from "express";
 import chalk from "chalk";
 
 import build from "./build";
+import createHandler from "./handler";
 
 // typescript namespace import doesn't work with Rollup
-const express = express_;
-const requireFromString = requireFromString_;
+const createExpressApp = express;
 
 const prefix = chalk.grey("λ-dev");
 
-const handleErr = (err: Error, res: express_.Response) => {
-  res.status(500).send("Function invocation failed: " + err.toString());
-  return console.error(
+// handlers for all routes
+const routeHandlers: { [key: string]: express.RequestHandler } = {};
+
+const handleError: express.ErrorRequestHandler = (error, _, res) => {
+  console.error(
     `${prefix} ${chalk.red("Function invocation failed:")}`,
-    err
+    error.stack
   );
-};
-
-const createCallback = (res: express_.Response) => (
-  err: Error | null,
-  lambdaRes: any | null
-) => {
-  if (err) return handleErr(err, res);
-
-  res.status(lambdaRes.statusCode);
-
-  for (const key in lambdaRes.headers) {
-    res.setHeader(key, lambdaRes.headers[key]);
-  }
-
-  res.send(lambdaRes.body);
-};
-
-const promiseCallback = (
-  promise: Promise<void>,
-  callback: ReturnType<typeof createCallback>
-) => {
-  if (promise) {
-    promise.then(res => callback(null, res)).catch(err => callback(err, null));
-  }
-};
-
-type Event = {
-  path: express_.Request["path"];
-  httpMethod: express_.Request["method"];
-  queryStringParameters: express_.Request["query"];
-  headers: express_.Request["headers"];
-  body: express_.Request["body"];
-};
-
-type CallbackFn = (
-  error: Error | null,
-  response: express_.Response | null
-) => void;
-
-type Handler = (
-  event: Event,
-  context: {},
-  callback: CallbackFn
-) => Promise<void>;
-
-const createHandler = (
-  source: string,
-  filename: string
-): express_.RequestHandler => (req, res) => {
-  let lambda: { handler: Handler };
-
-  try {
-    lambda = requireFromString(source, filename);
-  } catch (err) {
-    return handleErr(err, res);
-  }
-
-  const event = {
-    path: req.path,
-    httpMethod: req.method,
-    queryStringParameters: req.query,
-    headers: req.headers,
-    body: req.body
-  };
-
-  const callback = createCallback(res);
-  const promise = lambda.handler(event, {}, callback);
-  promiseCallback(promise, callback);
+  res.status(500).send("Function invocation failed: " + error.toString());
 };
 
 const getPath = (basePath: string) => {
@@ -92,15 +26,12 @@ const getPath = (basePath: string) => {
   return path.endsWith("/") ? path.replace(/\/$/, "") : path;
 };
 
-// handlers for all routes
-const routeHandlers: { [key: string]: express_.RequestHandler } = {};
-
 type CreateServer = CliServeArgs & {
   dev?: boolean;
   watch?: boolean;
 };
 
-export const createServer = async ({
+export async function createServer({
   basePath,
   dev = true,
   entry,
@@ -110,15 +41,15 @@ export const createServer = async ({
   port,
   watch = true,
   webpackConfig: customConfig
-}: CreateServer) => {
+}: CreateServer) {
   let firstRun = true;
-  const app = express();
+  const app = createExpressApp();
   app.use(bodyParser.raw());
   app.use(bodyParser.text({ type: "*/*" }));
 
   const path = getPath(basePath);
 
-  await build({
+  build({
     callback: ({ entries, modules }) => {
       for (const lambda of entries) {
         const requestPath = path + lambda.requestPath;
@@ -153,14 +84,16 @@ export const createServer = async ({
     watch
   });
 
+  app.use(handleError);
+
   return app;
-};
+}
 
 type Serve = CliServeArgs & {
   watch?: boolean;
 };
 
-export default async ({
+export default async function serve({
   basePath,
   entry,
   exclude,
@@ -169,7 +102,7 @@ export default async ({
   port,
   watch,
   webpackConfig: customConfig
-}: Serve) => {
+}: Serve) {
   const app = await createServer({
     basePath,
     entry,
@@ -189,4 +122,4 @@ export default async ({
       console.log(`${prefix} Serving...`);
     }
   });
-};
+}
