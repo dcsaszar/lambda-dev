@@ -25,9 +25,11 @@ type RejectArgs = {
   hash?: string;
 };
 
-type Callback = (
-  args: { entries: Entry[]; hash?: string; modules: any[] }
-) => void;
+type Callback = (args: {
+  entries: Entry[];
+  hash?: string;
+  modules: any[];
+}) => void;
 
 const getCallback = (
   entries: Entry[],
