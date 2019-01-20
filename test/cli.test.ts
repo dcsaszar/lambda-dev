@@ -1,9 +1,9 @@
-const CliTest = require("command-line-test");
+import * as CliTest from "command-line-test";
 
 describe("cli", () => {
   test("Without arguments", async () => {
     const cli = new CliTest();
-    const { error, stdout, stderr } = await cli.exec("node cli.js");
+    const { error, stdout, stderr } = await cli.exec("ts-node ./src/cli.ts is");
 
     expect(error).toMatchSnapshot();
     expect(stdout).toEqual(null);
@@ -12,7 +12,9 @@ describe("cli", () => {
 
   test("Build without entry argument", async () => {
     const cli = new CliTest();
-    const { error, stdout, stderr } = await cli.exec("node cli.js build");
+    const { error, stdout, stderr } = await cli.exec(
+      "ts-node ./src/cli.ts build"
+    );
 
     expect(error).toMatchSnapshot();
     expect(stdout).toEqual(null);
@@ -22,7 +24,7 @@ describe("cli", () => {
   test("Build without target argument", async () => {
     const cli = new CliTest();
     const { error, stdout, stderr } = await cli.exec(
-      "node cli.js build test/fixtures"
+      "ts-node ./src/cli.ts build test/fixtures"
     );
 
     expect(error).toMatchSnapshot();
@@ -32,7 +34,9 @@ describe("cli", () => {
 
   test("Serve without entry argument", async () => {
     const cli = new CliTest();
-    const { error, stdout, stderr } = await cli.exec("node cli.js serve");
+    const { error, stdout, stderr } = await cli.exec(
+      "ts-node ./src/cli.ts serve"
+    );
 
     expect(error).toMatchSnapshot();
     expect(stdout).toEqual(null);

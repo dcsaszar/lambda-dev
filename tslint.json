@@ -2,7 +2,6 @@
   "rulesDirectory": ["tslint-plugin-prettier"],
   "extends": [
     "tslint-config-standard",
-    "tslint-react",
     "tslint-config-prettier"
   ],
   "rules": {

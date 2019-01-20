@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cli Build without entry argument 1`] = `
+[Error: Command failed: ts-node ./src/cli.ts build
+
+/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/cli.ts(35,12): error TS2304: Cannot find name 'CliServeArgs'.
+src/cli.ts(57,12): error TS2304: Cannot find name 'CliBuildArgs'.
+
+    at createTSError (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261:12)
+    at getOutput (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:367:40)
+    at Object.compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:558:11)
+    at Module.m._compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:439:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Object.require.extensions.(anonymous function) [as .ts] (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:442:12)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+]
+`;
+
+exports[`cli Build without target argument 1`] = `
+[Error: Command failed: ts-node ./src/cli.ts build test/fixtures
+
+/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/cli.ts(35,12): error TS2304: Cannot find name 'CliServeArgs'.
+src/cli.ts(57,12): error TS2304: Cannot find name 'CliBuildArgs'.
+
+    at createTSError (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261:12)
+    at getOutput (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:367:40)
+    at Object.compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:558:11)
+    at Module.m._compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:439:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Object.require.extensions.(anonymous function) [as .ts] (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:442:12)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+]
+`;
+
+exports[`cli Serve without entry argument 1`] = `
+[Error: Command failed: ts-node ./src/cli.ts serve
+
+/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/cli.ts(35,12): error TS2304: Cannot find name 'CliServeArgs'.
+src/cli.ts(57,12): error TS2304: Cannot find name 'CliBuildArgs'.
+
+    at createTSError (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261:12)
+    at getOutput (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:367:40)
+    at Object.compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:558:11)
+    at Module.m._compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:439:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Object.require.extensions.(anonymous function) [as .ts] (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:442:12)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+]
+`;
+
+exports[`cli Without arguments 1`] = `
+[Error: Command failed: ts-node ./src/cli.ts is
+
+/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/cli.ts(35,12): error TS2304: Cannot find name 'CliServeArgs'.
+src/cli.ts(57,12): error TS2304: Cannot find name 'CliBuildArgs'.
+
+    at createTSError (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:261:12)
+    at getOutput (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:367:40)
+    at Object.compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:558:11)
+    at Module.m._compile (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:439:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Object.require.extensions.(anonymous function) [as .ts] (/Users/iiro/git/lambda-dev/node_modules/ts-node/src/index.ts:442:12)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+]
+`;

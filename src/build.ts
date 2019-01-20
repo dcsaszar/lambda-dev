@@ -2,7 +2,7 @@ import * as webpack_ from "webpack";
 import chalk from "chalk";
 
 import getEntries, { Entry } from "./entries";
-import getWebpackConfig from "./webpack.js";
+import getWebpackConfig from "./webpack";
 
 // bad typings
 const MemoryFS = require("memory-fs");

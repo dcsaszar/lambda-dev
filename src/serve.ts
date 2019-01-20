@@ -1,12 +1,13 @@
 import * as bodyParser from "body-parser";
 import * as express_ from "express";
-import requireFromString from "require-from-string";
+import * as requireFromString_ from "require-from-string";
 import chalk from "chalk";
 
 import build from "./build";
 
 // typescript namespace import doesn't work with Rollup
 const express = express_;
+const requireFromString = requireFromString_;
 
 const prefix = chalk.grey("λ-dev");
 

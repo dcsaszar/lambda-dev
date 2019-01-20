@@ -10,7 +10,7 @@ export const getGlobAndCwd = (entry: string) => {
   const dirStat = fs.statSync(resolved);
 
   if (dirStat.isDirectory()) {
-    return { glob: "*", cwd: resolved };
+    return { glob: "**/*", cwd: resolved };
   } else {
     const { dir } = path.parse(resolved);
     return { glob: resolved, cwd: dir };
@@ -26,7 +26,7 @@ export type Entry = {
 export default function getEntries(
   entry: string = CWD,
   include?: string[],
-  exclude?: string[]
+  exclude: string[] = []
 ): Entry[] | undefined {
   try {
     const { glob, cwd } = getGlobAndCwd(entry);
