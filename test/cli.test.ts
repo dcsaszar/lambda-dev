@@ -5,7 +5,7 @@ describe("cli", () => {
     const cli = new CliTest();
     const { error, stdout, stderr } = await cli.exec("ts-node ./src/cli.ts is");
 
-    expect(error).toMatchSnapshot();
+    expect(error).toBeTruthy();
     expect(stdout).toEqual(null);
     expect(stderr).toEqual(null);
   });
@@ -16,7 +16,7 @@ describe("cli", () => {
       "ts-node ./src/cli.ts build"
     );
 
-    expect(error).toMatchSnapshot();
+    expect(error).toBeTruthy();
     expect(stdout).toEqual(null);
     expect(stderr).toEqual(null);
   });
@@ -27,7 +27,7 @@ describe("cli", () => {
       "ts-node ./src/cli.ts build test/fixtures"
     );
 
-    expect(error).toMatchSnapshot();
+    expect(error).toBeTruthy();
     expect(stdout).toEqual(null);
     expect(stderr).toEqual(null);
   });
@@ -38,7 +38,7 @@ describe("cli", () => {
       "ts-node ./src/cli.ts serve"
     );
 
-    expect(error).toMatchSnapshot();
+    expect(error).toBeTruthy();
     expect(stdout).toEqual(null);
     expect(stderr).toEqual(null);
   });
